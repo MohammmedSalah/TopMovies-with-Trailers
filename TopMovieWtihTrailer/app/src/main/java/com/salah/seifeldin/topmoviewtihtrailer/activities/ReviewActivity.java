@@ -1,5 +1,6 @@
 package com.salah.seifeldin.topmoviewtihtrailer.activities;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import com.salah.seifeldin.topmoviewtihtrailer.interfaces.MovieApiServices;
 import com.salah.seifeldin.topmoviewtihtrailer.models.ReviewModel;
 import com.salah.seifeldin.topmoviewtihtrailer.models.ReviewsListModel;
 import com.salah.seifeldin.topmoviewtihtrailer.retrofitnstance.RetrofitClient;
+import com.salah.seifeldin.topmoviewtihtrailer.utilities.NetworkUtils;
 
 import java.util.List;
 
@@ -22,13 +24,24 @@ import retrofit.Retrofit;
 
 public class ReviewActivity extends AppCompatActivity {
 
+    ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dialog = new ProgressDialog(ReviewActivity.this);
+        dialog.setTitle("Loading ...");
+        dialog.setCancelable(false);
         setContentView(R.layout.activity_review);
-        int id = getIntent().getExtras().getInt("reviewId") ;
-        getReviewData(id);
-    }
+        int id = getIntent().getExtras().getInt("reviewId");
+        if (NetworkUtils.isConnectingToInternet(getApplicationContext())) {
+            dialog.show();
+            getReviewData(id);
+        }else
+            Toast.makeText(this, "sorry no internet connection", Toast.LENGTH_SHORT).show();
+
+}
+
 
 
     public void getReviewData(final int reviewId){
@@ -43,6 +56,7 @@ public class ReviewActivity extends AppCompatActivity {
                 ReviewAdapter adapter = new ReviewAdapter(getApplicationContext() , R.layout.row_rev , reviewList) ;
                 ListView listView = (ListView) findViewById(R.id.reviewlist) ;
                 listView.setAdapter(adapter);
+                dialog.hide();
             }
 
             @Override

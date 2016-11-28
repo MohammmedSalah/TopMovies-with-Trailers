@@ -3,8 +3,9 @@ package com.salah.seifeldin.topmoviewtihtrailer.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Movie;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +15,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.salah.seifeldin.topmoviewtihtrailer.R;
 import com.salah.seifeldin.topmoviewtihtrailer.adapters.RecycleMoviesAdapter;
+import com.salah.seifeldin.topmoviewtihtrailer.database.LoadMoviesDataBaseService;
+import com.salah.seifeldin.topmoviewtihtrailer.database.SaveMoviesDataBaseService;
 import com.salah.seifeldin.topmoviewtihtrailer.interfaces.MovieApiServices;
 import com.salah.seifeldin.topmoviewtihtrailer.models.MovieModel;
 import com.salah.seifeldin.topmoviewtihtrailer.models.MoviesListModel;
 import com.salah.seifeldin.topmoviewtihtrailer.retrofitnstance.RetrofitClient;
+import com.salah.seifeldin.topmoviewtihtrailer.utilities.NetworkUtils;
 import com.salah.seifeldin.topmoviewtihtrailer.utilities.SharedPreferenceUtils;
 
 import java.util.ArrayList;
@@ -35,17 +40,21 @@ import retrofit.Retrofit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoviesListFragment extends Fragment {
+public class MoviesListFragment extends Fragment implements LoadMoviesDataBaseService.OnLoadingOfflineMovies {
 
+    ProgressDialog dialog ;
     static List<MovieModel> movies ;
     static List<MovieModel> poularMovies ;
     static List<MovieModel> topRatedMovies ;
     RecycleMoviesAdapter moviesAdapter ;
     RecyclerView recyclerView ;
     int show_MoviesStatus = 0 ;
-    //ProgressDialog dialog ;
+
     MoviesClickListener listener ;
     static Context context;
+
+
+
     public interface MoviesClickListener{
         public void movieId(int id) ;
     }
@@ -61,13 +70,13 @@ public class MoviesListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_movies_list, container, false);
+        context = getActivity();
         movies =  new ArrayList<>() ;
-
-        /*dialog = new ProgressDialog(getActivity());
-        dialog.show();
-        dialog.setCancelable(false);*/
+        dialog = new ProgressDialog(getActivity());
+        dialog.setTitle("Please Wait .....");
+        dialog.setCancelable(false);
         initViews(view);
-        context = getActivity() ;
+
         return view ;
     }
 
@@ -78,14 +87,45 @@ public class MoviesListFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         moviesAdapter = new RecycleMoviesAdapter(getActivity(), movies ) ;
         recyclerView.setAdapter(moviesAdapter);
-        if(show_MoviesStatus == 0)
-            getJsonPopularMoviesData();
-        else if(show_MoviesStatus == 1)
-            getJsonTopRatedMoviesData();
-        else{
-            getFavoriteMoviesData();
-        }
+        dialog.show();
+        if(NetworkUtils.isConnectingToInternet(getActivity())) {
+            if (show_MoviesStatus == 0) {
+                dialog.show();
+                getJsonPopularMoviesData();
+            } else if (show_MoviesStatus == 1) {
+                dialog.show();
+                getJsonTopRatedMoviesData();
+            } else {
+                getFavoriteMoviesData();
+            }
+        }else {
 
+            dialog.show();
+            dialog.setTitle("no internet access ... \n loading to show offline data");
+            if(context == null)
+                Log.d("null2","null2");
+            LoadMoviesDataBaseService loadMoviesDataBaseService = new LoadMoviesDataBaseService(context,this);
+
+            if (show_MoviesStatus == 0) {
+                if(SharedPreferenceUtils.checkOffline_Popular_State(context))
+                    loadMoviesDataBaseService.execute(0);
+                else{
+                    dialog.hide();
+                    Toast.makeText(context, "sorry no offline data found !", Toast.LENGTH_LONG).show();
+                }
+
+            } else if (show_MoviesStatus == 1) {
+                if(SharedPreferenceUtils.checkOffline_Top_Rated_State(context))
+                    loadMoviesDataBaseService.execute(1);
+                else{
+                    dialog.hide();
+                    Toast.makeText(context, "sorry no offline data found !", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                getFavoriteMoviesData();
+            }
+            Toast.makeText(context, "this is offline movies", Toast.LENGTH_SHORT).show();
+        }
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener() {
                 @Override public boolean onSingleTapUp(MotionEvent e) {
@@ -173,17 +213,36 @@ public class MoviesListFragment extends Fragment {
     }
 
     public void setAdapter(List<MovieModel> moviesList){
+        dialog.hide();
         moviesAdapter.setMovieModelList(moviesList);
+        SaveMoviesDataBaseService saveMoviesDataBaseService  = new SaveMoviesDataBaseService(context,show_MoviesStatus) ;
+        if(show_MoviesStatus ==0 && !SharedPreferenceUtils.checkOffline_Popular_State(context)){
+            Log.d("saving","setAdapter");
+            saveMoviesDataBaseService.execute(moviesList);
+            SharedPreferenceUtils.setOffline_Popular_state(context);
+        }else if(show_MoviesStatus ==1 && !SharedPreferenceUtils.checkOffline_Top_Rated_State(context)){
+            Log.d("saving","setAdapter");
+            saveMoviesDataBaseService.execute(moviesList);
+            SharedPreferenceUtils.setOffline_Top_Rated_state(context);
+        }
     }
     public void getFavoriteMoviesData(){
+        dialog.hide();
         movies = SharedPreferenceUtils.getFavorites(context) ;
         moviesAdapter = new RecycleMoviesAdapter(context ,movies) ;
         recyclerView.setAdapter(moviesAdapter);
     }
 
+
     public void setShow_MoviesStatus(int moviesStatus){
         this.show_MoviesStatus = moviesStatus ;
     }
 
+    @Override
+    public void onLoadingOfflineMoviesListner(List<MovieModel> movieModels) {
+        movies = movieModels;
+        dialog.hide();
+        setAdapter(movieModels);
+    }
 
 }

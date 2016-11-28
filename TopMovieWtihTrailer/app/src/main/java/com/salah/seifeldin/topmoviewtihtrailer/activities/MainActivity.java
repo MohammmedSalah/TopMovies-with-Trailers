@@ -19,6 +19,7 @@ import com.salah.seifeldin.topmoviewtihtrailer.fragments.MoviesListFragment;
 public class MainActivity extends AppCompatActivity implements MoviesListFragment.MoviesClickListener{
 
     boolean ch = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

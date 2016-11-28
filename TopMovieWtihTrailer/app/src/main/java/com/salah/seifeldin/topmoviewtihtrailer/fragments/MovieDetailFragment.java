@@ -64,9 +64,9 @@ public class MovieDetailFragment extends Fragment {
         //TextView textView = (TextView) getView().findViewById(R.id.test);
         //textView.setText(String.valueOf(this.movieId));
         View view = getView() ;
-        if(view != null) {
-            movieModel = MoviesListFragment.movies.get(movieId);
             backdropPath = (ImageView) view.findViewById(R.id.imagebackdrop_path);
+            if(view != null) {
+                movieModel = MoviesListFragment.movies.get(movieId);
             Picasso.with(getActivity())
                     .load("http://image.tmdb.org/t/p/w185/" + movieModel.getBackdropPath())
                     .placeholder(R.drawable.loadimage)

@@ -16,10 +16,41 @@ public class SharedPreferenceUtils {
 
     public static final String PREFS_NAME = "MoviesApp";
     public static final String FAVORITES = "Movies_Favorite";
+    public static final String OFFLINE_POPULAR_STATE ="offline_popular_state";
+    public static final String OFFLINE_TOP_RATED_STATE ="offline_top_rated_state";
 
     public SharedPreferenceUtils() {
         super();
     }
+
+    public static void setOffline_Popular_state(Context context){
+        SharedPreferences settings;
+        Editor editor;
+
+        settings = context.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
+        editor = settings.edit();
+        editor.putBoolean(OFFLINE_POPULAR_STATE,true);
+        editor.commit();
+    }
+    public static boolean checkOffline_Popular_State(Context context){
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
+        return  settings.getBoolean(OFFLINE_POPULAR_STATE,false);
+    }
+
+    public static void setOffline_Top_Rated_state(Context context){
+        SharedPreferences settings;
+        Editor editor;
+
+        settings = context.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
+        editor = settings.edit();
+        editor.putBoolean(OFFLINE_TOP_RATED_STATE,true);
+        editor.commit();
+    }
+    public static boolean checkOffline_Top_Rated_State(Context context){
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
+        return  settings.getBoolean(OFFLINE_TOP_RATED_STATE,false);
+    }
+
 
     // This four methods are used for maintaining favorites.
     public static void saveFavorites(Context context, List<MovieModel> favorites) {

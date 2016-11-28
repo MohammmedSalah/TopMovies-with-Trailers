@@ -1,6 +1,7 @@
 package com.salah.seifeldin.topmoviewtihtrailer.activities;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import com.salah.seifeldin.topmoviewtihtrailer.interfaces.MovieApiServices;
 import com.salah.seifeldin.topmoviewtihtrailer.models.TrailerModel;
 import com.salah.seifeldin.topmoviewtihtrailer.models.TrailersListModel;
 import com.salah.seifeldin.topmoviewtihtrailer.retrofitnstance.RetrofitClient;
+import com.salah.seifeldin.topmoviewtihtrailer.utilities.NetworkUtils;
 
 import java.util.List;
 
@@ -30,6 +32,7 @@ import retrofit.Retrofit;
 
 public class TrailerActivity extends ListActivity {
 
+    ProgressDialog dialog ;
     ListView listView ;
     ArrayAdapter<String> adapter;
     List<TrailerModel> trailerModel ;
@@ -37,11 +40,16 @@ public class TrailerActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        dialog = new ProgressDialog(TrailerActivity.this);
+        dialog.setCancelable(false);
+        dialog.setTitle("Loading ...");
         listView = getListView();
-
         int movieId = getIntent().getExtras().getInt("movieId") ;
-        getTrailers(movieId);
+        if(NetworkUtils.isConnectingToInternet(getApplicationContext())) {
+            dialog.show();
+            getTrailers(movieId);
+        }else
+            Toast.makeText(this, "sorry no internet connection !!", Toast.LENGTH_LONG).show();
     }
 
     public void getTrailers(final int movieId){
@@ -52,8 +60,9 @@ public class TrailerActivity extends ListActivity {
             public void onResponse(Response<TrailersListModel> response, Retrofit retrofit) {
                 trailerModel =  response.body().getTrailers();
                 Log.d("number "  ,  String.valueOf(trailerModel.size()) ) ;
-                Log.d("id "  ,  String.valueOf(movieId) ) ;
+                dialog.hide();
                 getStringData(trailerModel);
+
             }
 
             @Override
