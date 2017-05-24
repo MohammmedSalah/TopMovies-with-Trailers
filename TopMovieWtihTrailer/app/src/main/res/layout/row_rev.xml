@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/reviewauther"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#ffa909"
+                android:text="Large Text"
+                android:textSize="35dp">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/reviewcontent"
+                android:layout_marginTop="20dp"
+                android:maxLines="5"
+                android:textColor="#0da6f3"
+                android:layout_marginRight="10dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="101dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/imag_readfillreview"
+                android:src="@drawable/readfullrev"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="10dp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

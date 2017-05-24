@@ -1,0 +1,122 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    android:weightSum="1"
+    android:layout_marginTop="0dp">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RatingBar
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:numStars="5"
+                    android:stepSize="0.1"
+                    android:isIndicator="true" />
+
+                <ImageView
+                    android:layout_width="156dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/favorite"
+                    android:src="@drawable/nfav"
+                    android:background="#00be8787"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="0dp" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+
+                android:id="@+id/imagebackdrop_path"
+                android:src="@drawable/a_4"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp" />
+
+
+
+            <TextView
+                android:layout_width="178dp"
+                android:layout_height="30dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="dddddssssd"
+                android:textColor="#fa00"
+                android:id="@+id/date" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="-----------"
+                    android:id="@+id/title"
+                    android:layout_width="225dp"
+                    android:layout_height="29dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="26sp"
+                    android:textColor="@android:color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:includeFontPadding="false"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="35dp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="74dp"
+                    android:text="Play"
+                    android:id="@+id/watchtrailer"
+                    android:layout_marginRight="25dp"
+                    android:src="@drawable/play_button"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/desc_textview"
+                android:hint="seifeldin salah "
+                android:textColor="#fa00"
+                android:layout_marginTop="30dp"
+                android:textSize="18dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/imageView"
+                android:layout_weight="0.07" />
+
+
+
+                <ImageView
+                    android:layout_width="425dp"
+                    android:layout_height="107dp"
+                    android:src="@drawable/rev"
+                    android:id="@+id/rev_im"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="0dp" />
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
